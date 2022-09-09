@@ -17,19 +17,27 @@ class ProductController extends Controller
      */
     public function index()
     {
-       if(request()->ajax())
-       {
-        $query = Product::query();
+        if (request()->ajax()) {
+            $query = Product::query();
 
-        return DataTables::of($query)
-        ->EditColumn('price', function($item){
-            return number_format($item->price);
-        })
-        ->make();
-       }
-        return view('pages.dashboard.product.index ');
+            return DataTables::of($query)
+                ->addColumn('action', function ($item) {
+                    return '
+                    <a class="inline-block border border-gray-700 bg-gray-700 text-black rounded-md px-2 py-1 m-1 transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline" 
+                    href="' . route('dashboard.product.edit', $item->id) . '">
+                    Edit
+                </a>
+                       ';
+                })
+                ->editColumn('price', function ($item) {
+                    return number_format($item->price);
+                })
+                ->rawColumns(['action'])
+                ->make();
+        }
+
+        return view('pages.dashboard.product.index');
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -78,9 +86,11 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Product $product)
     {
-        //
+        return view('pages.dashboard.product.edit',[
+            'item' => $product
+        ]);
     }
 
     /**
