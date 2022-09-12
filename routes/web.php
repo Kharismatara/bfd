@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductGalleryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,6 +42,9 @@ Route::name('dashboard.')->prefix('dashboard')->middleware('admin')->group(funct
 
     Route::middleware(['admin'])->group(function () {
         Route::resource('product', ProductController::class);
+        Route::resource('product.gallery', ProductGalleryController::class)->shallow()->only(
+            'index', 'create', 'store', 'destoy'
+        );
        
     });
 });
